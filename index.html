@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DIVISOR OFICIAL TOP by Luiz Tierling</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 28px;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 100%;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .main-content {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .left-panel, .right-panel {
+            width: 49%;
+            box-sizing: border-box;
+            padding: 10px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 150px;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            font-size: 14px;
+            margin-bottom: 10px;
+            resize: vertical;
+        }
+
+        .input-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        label {
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        select, input[type="number"] {
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        input[type="number"] {
+            width: 8ch;
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .button-group button {
+            margin: 0 5px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s, color 0.3s, outline 0.3s;
+        }
+
+        button:active, button:focus {
+            outline: 1px solid black;
+        }
+
+        .button-group button.active {
+            outline: 1px solid black;
+        }
+
+        .block button.active {
+            outline: 1px solid black;
+        }
+
+        button.dark-blue {
+            background-color: #1E90FF;
+            color: white;
+        }
+
+        button.green {
+            background-color: #32CD32;
+            color: white;
+        }
+
+        button.red {
+            background-color: #FF4500;
+            color: white;
+        }
+
+        button.light-blue {
+            background-color: #00BFFF;
+            color: white;
+        }
+
+        .blocks-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-start;
+            margin-top: 20px;
+        }
+
+        .block {
+            width: 9.5%;
+            margin: 0.25%;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 5px;
+            background-color: #f9f9f9;
+            box-sizing: border-box;
+            transition: background-color 0.3s, border 0.3s;
+        }
+
+        .block.selected {
+            background-color: #d3d3d3;
+            border: 1.2px solid black;
+        }
+
+        .block-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+
+        .block-num {
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .block-char-count {
+            font-size: 14px;
+            color: #1A237E;
+            transition: color 0.3s, text-shadow 0.3s;
+        }
+
+        .block.selected .block-char-count {
+            color: black;
+        }
+
+        .block-content {
+            font-size: 12px;
+            white-space: pre-wrap;
+            max-height: 80px;
+            overflow-y: auto;
+            transition: background-color 0.3s;
+        }
+
+        .block.selected .block-content {
+            background-color: #a9a9a9;
+        }
+
+        .block .button-group {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 5px;
+        }
+
+        .block button {
+            padding: 5px;
+            font-size: 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 0 2px;
+            transition: color 0.3s, background-color 0.3s, border 0.3s;
+        }
+
+        .block.selected button {
+            color: black;
+        }
+
+        .character-count {
+            font-size: 12px;
+            color: #1A237E;
+            margin-top: 5px;
+        }
+
+        .audio-length {
+            font-size: 12px;
+            color: #1A237E;
+            margin-top: 2px;
+        }
+
+        .char-red {
+            color: red;
+            font-weight: bold;
+        }
+
+        .char-blue {
+            color: #00CED1;
+            font-weight: bold;
+            text-shadow: 1px 1px 1px black;
+        }
+
+        .block-warning {
+            border: 2px solid red;
+        }
+
+        .block-exceeded {
+            background-color: #E6E6FA;
+            border: 2px solid #9400D3;
+        }
+
+        .block-exceeded-10000 {
+            background-color: #D3D3D3;
+            border: 2.4px solid black;
+        }
+
+        .block-exceeded-10000 .block-num {
+            color: red;
+        }
+
+        .block-exceeded-10000 .block-char-count {
+            color: black;
+        }
+
+        .block-exceeded-10000 .block-content {
+            color: red;
+        }
+
+        .block-exceeded-10000 .button-group button {
+            background-color: black;
+        }
+
+        .block-exceeded-10000 .copy-btn {
+            color: #00CED1;
+        }
+
+        .block-exceeded-10000 .translate-btn {
+            color: #32CD32;
+        }
+
+        #errorMsg {
+            color: red;
+            font-weight: bold;
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        /* Seção de SRT */
+        .srt-section {
+            display: none; /* Oculta inicialmente */
+            margin-top: 20px;
+        }
+
+        .srt-steps {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        .srt-step {
+            width: 32%;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            box-sizing: border-box;
+            margin-bottom: 20px;
+            transition: background-color 0.3s, border 0.3s;
+        }
+
+        .srt-step h3 {
+            margin-bottom: 10px;
+            font-size: 16px;
+            color: #1E90FF;
+        }
+
+        .srt-step textarea {
+            width: 100%;
+            height: 100px;
+            resize: vertical;
+        }
+
+        .srt-step button {
+            margin-top: 10px;
+            padding: 8px 12px;
+            font-size: 14px;
+        }
+
+        /* Botão de Download SRT dentro da srt-section */
+        .srt-step .download-srt-button {
+            margin-top: 10px;
+            padding: 8px 12px;
+            font-size: 14px;
+            background-color: #FF4500;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            display: none; /* Oculto inicialmente */
+            transition: background-color 0.3s;
+        }
+
+        .srt-step .download-srt-button:hover {
+            background-color: #CC3700;
+        }
+
+        .popup {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            display: none;
+            z-index: 1000;
+        }
+
+        /* Responsividade */
+        @media (max-width: 1200px) {
+            .srt-step {
+                width: 48%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .left-panel, .right-panel {
+                width: 100%;
+            }
+            .srt-step {
+                width: 100%;
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+<h1>DIVISOR OFICIAL TOP by Luiz Tierling</h1>
+
+<div class="container">
+    <div class="main-content">
+        <div class="left-panel">
+            <textarea id="inputText" placeholder="Cole seu texto principal aqui para dividir ou traduzir..."></textarea>
+            <div id="charCount" class="character-count">Caracteres: 0</div>
+            <div id="audioLength" class="audio-length">Duração aproximada do áudio: 0m 0s</div>
+
+            <div class="input-group">
+                <label for="blockSize">Informe a quantidade de divisões:</label>
+                <input type="number" id="blockSize" min="1" value="11" placeholder="Quantidade...">
+            </div>
+
+            <div class="input-group">
+                <label for="type">Escolha o tipo:</label>
+                <select id="type">
+                    <option value="characters">Caracteres</option>
+                    <option value="words">Palavras</option>
+                    <option value="paragraphs">Parágrafos</option>
+                    <option value="indent" selected>Recuo de Parágrafo</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label for="translator">Escolha o tradutor:</label>
+                <select id="translator">
+                    <option value="google">Google</option>
+                    <option value="deepl" selected>Deepl</option>
+                    <option value="yandex">Yandex</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label for="language">Escolha o idioma:</label>
+                <select id="language">
+                    <option value="de">Alemão</option>
+                    <option value="ar">Árabe</option>
+                    <option value="bg">Búlgaro</option>
+                    <option value="zh">Chinês (Simplificado)</option>
+                    <option value="zh-TW">Chinês (Tradicional)</option>
+                    <option value="ko">Coreano</option>
+                    <option value="da">Dinamarquês</option>
+                    <option value="sk">Eslovaco</option>
+                    <option value="sl">Esloveno</option>
+                    <option value="es">Espanhol</option>
+                    <option value="et">Estônio</option>
+                    <option value="fi">Finlandês</option>
+                    <option value="fr">Francês</option>
+                    <option value="el">Grego</option>
+                    <option value="nl">Holandês</option>
+                    <option value="hu">Húngaro</option>
+                    <option value="id">Indonésio</option>
+                    <option value="en-US" selected>Inglês (Americano)</option>
+                    <option value="en-GB">Inglês (Britânico)</option>
+                    <option value="it">Italiano</option>
+                    <option value="ja">Japonês</option>
+                    <option value="lv">Letão</option>
+                    <option value="lt">Lituano</option>
+                    <option value="nb">Norueguês (Bokmål)</option>
+                    <option value="pl">Polonês</option>
+                    <option value="pt-PT">Português</option>
+                    <option value="pt-BR">Português (Brasileiro)</option>
+                    <option value="ro">Romeno</option>
+                    <option value="ru">Russo</option>
+                    <option value="sv">Sueco</option>
+                    <option value="cs">Tcheco</option>
+                    <option value="tr">Turco</option>
+                    <option value="uk">Ucraniano</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="right-panel">
+            <textarea id="srtInput" placeholder="Cole seu texto aqui para gerar o SRT..."></textarea>
+            <div id="srtCharCount" class="character-count">Caracteres: 0</div>
+            <div id="srtAudioLength" class="audio-length">Duração aproximada do áudio: 0m 0s</div>
+        </div>
+    </div>
+
+    <div class="button-group">
+        <button class="dark-blue" onclick="resetForm(); setActiveButton(this)">Início</button>
+        <button class="green" onclick="processText('divide'); setActiveButton(this)">Dividir Texto</button>
+        <button class="red" onclick="processText('srt'); setActiveButton(this)">Gerar SRT</button>
+    </div>
+
+    <div id="errorMsg"></div>
+
+    <div id="output" class="blocks-container"></div>
+
+    <!-- Seção de SRT com Etapas -->
+    <div id="srtSection" class="srt-section">
+        <h2>Gerador de SRT</h2>
+        <div class="srt-steps">
+            <!-- Passo 1: Texto Original -->
+            <div class="srt-step">
+                <h3>Passo 1: Texto Original</h3>
+                <textarea id="srtOriginalText" readonly></textarea>
+            </div>
+            <!-- Passo 2: Dividir Texto -->
+            <div class="srt-step">
+                <h3>Passo 2: Dividir Texto</h3>
+                <textarea id="srtDividedText" readonly></textarea>
+                <button class="green" onclick="dividirSrtTexto()">Dividir</button>
+                <button class="light-blue" onclick="copiarSrtDividido()">Copiar Texto Dividido</button>
+            </div>
+            <!-- Passo 3: Converter para SRT -->
+            <div class="srt-step">
+                <h3>Passo 3: Converter para SRT</h3>
+                <textarea id="srtFinalText" placeholder="O SRT será gerado aqui..." readonly></textarea>
+                <button class="green" onclick="converterParaSrt()">Converter para SRT</button>
+                <button class="red download-srt-button" onclick="baixarSrt()">Baixar Arquivo SRT</button>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div id="copyPopup" class="popup">Texto copiado!</div>
+<div id="actionPopup" class="popup"></div>
+
+<script>
+    // Função para atualizar a contagem de caracteres e duração de áudio
+    function updateCharCount() {
+        const text = document.getElementById('inputText').value;
+        const charCount = text.length;
+        const charCountElement = document.getElementById('charCount');
+        const audioLengthElement = document.getElementById('audioLength');
+
+        // Reset classes
+        charCountElement.classList.remove('char-red', 'char-blue');
+
+        // Aplicar classes com base na contagem
+        if (charCount > 10000) {
+            charCountElement.classList.add('char-red');
+        } else if (charCount > 9800) {
+            charCountElement.classList.add('char-blue');
+        } else if (charCount > 5000) {
+            charCountElement.classList.add('char-red');
+        }
+
+        charCountElement.textContent = `Caracteres: ${charCount.toLocaleString()}`;
+
+        // Calcular duração de áudio
+        const totalSeconds = Math.ceil((charCount / 1000) * 67); // 1 minuto e 7 segundos = 67 segundos
+        const hours = Math.floor(totalSeconds / 3600);
+        const minutes = Math.floor((totalSeconds % 3600) / 60);
+        const seconds = totalSeconds % 60;
+
+        let audioText = '';
+        if (hours > 0) {
+            audioText = `Duração aproximada do áudio: ${hours}h ${minutes}m ${seconds}s`;
+        } else {
+            audioText = `Duração aproximada do áudio: ${minutes}m ${seconds}s`;
+        }
+
+        audioLengthElement.textContent = audioText;
+    }
+
+    // Função para atualizar a contagem de caracteres do SRT e duração de áudio
+    function updateSrtCharCount() {
+        const text = document.getElementById('srtInput').value;
+        const charCount = text.length;
+        const charCountElement = document.getElementById('srtCharCount');
+        const audioLengthElement = document.getElementById('srtAudioLength');
+
+        // Reset classes
+        charCountElement.classList.remove('char-red', 'char-blue');
+
+        // Aplicar classes com base na contagem
+        if (charCount > 10000) {
+            charCountElement.classList.add('char-red');
+        } else if (charCount > 9800) {
+            charCountElement.classList.add('char-blue');
+        } else if (charCount > 5000) {
+            charCountElement.classList.add('char-red');
+        }
+
+        charCountElement.textContent = `Caracteres: ${charCount.toLocaleString()}`;
+
+        // Calcular duração de áudio
+        const totalSeconds = Math.ceil((charCount / 1000) * 67); // 1 minuto e 7 segundos = 67 segundos
+        const hours = Math.floor(totalSeconds / 3600);
+        const minutes = Math.floor((totalSeconds % 3600) / 60);
+        const seconds = totalSeconds % 60;
+
+        let audioText = '';
+        if (hours > 0) {
+            audioText = `Duração aproximada do áudio: ${hours}h ${minutes}m ${seconds}s`;
+        } else {
+            audioText = `Duração aproximada do áudio: ${minutes}m ${seconds}s`;
+        }
+
+        audioLengthElement.textContent = audioText;
+    }
+
+    // Função para resetar o formulário
+    function resetForm() {
+        document.getElementById('inputText').value = '';
+        document.getElementById('srtInput').value = '';
+        document.getElementById('output').innerHTML = '';
+        document.getElementById('errorMsg').innerHTML = '';
+        document.getElementById('charCount').textContent = 'Caracteres: 0';
+        document.getElementById('srtCharCount').textContent = 'Caracteres: 0';
+        document.getElementById('audioLength').textContent = 'Duração aproximada do áudio: 0m 0s';
+        document.getElementById('srtAudioLength').textContent = 'Duração aproximada do áudio: 0m 0s';
+        document.getElementById('blockSize').value = '11';
+        document.getElementById('type').value = 'indent';
+        document.getElementById('translator').value = 'deepl';
+        document.getElementById('language').value = 'en-US';
+        showActionPopup('Página Inicial');
+        const buttons = document.querySelectorAll('.button-group button');
+        buttons.forEach(btn => btn.classList.remove('active'));
+        // Remover seleção de blocos
+        const blocks = document.querySelectorAll('.block');
+        blocks.forEach(block => block.classList.remove('selected'));
+        // Ocultar seção SRT
+        document.getElementById('srtSection').style.display = 'none';
+        // Exibir seção de divisão de texto
+        document.getElementById('output').style.display = 'flex';
+    }
+
+    // Função principal para processar o texto
+    function processText(action) {
+        const errorMsg = document.getElementById('errorMsg');
+        errorMsg.innerHTML = '';
+
+        if (action === 'srt') {
+            const srtText = document.getElementById('srtInput').value.trim();
+            if (!srtText) {
+                errorMsg.textContent = "Por favor, insira um texto para o SRT.";
+                return;
+            }
+            showActionPopup('Gerando SRT...');
+            generateSrtPage(srtText);
+        } else if (action === 'divide') {
+            const text = document.getElementById('inputText').value.trim();
+            if (!text) {
+                errorMsg.textContent = "Por favor, insira um texto.";
+                return;
+            }
+            showActionPopup('Dividindo Texto...');
+            divideText();
+            // Alternar visibilidade das seções
+            document.getElementById('srtSection').style.display = 'none';
+            document.getElementById('output').style.display = 'flex';
+        }
+    }
+
+    // Função para dividir o texto em partes respeitando os pontos finais
+    function divideText() {
+        const text = document.getElementById('inputText').value.trim();
+        const blockSize = parseInt(document.getElementById('blockSize').value);
+        const type = document.getElementById('type').value;
+        const outputDiv = document.getElementById('output');
+        outputDiv.innerHTML = '';
+
+        let blocks = [];
+
+        // Lógica para dividir o texto com base no tipo selecionado, respeitando pontos finais
+        if (type === 'characters') {
+            let tempText = text;
+            while (tempText.length > 0) {
+                let slice = tempText.slice(0, blockSize);
+                let lastPeriodIndex = slice.lastIndexOf('.');
+                if (lastPeriodIndex !== -1 && lastPeriodIndex !== slice.length - 1) {
+                    slice = slice.slice(0, lastPeriodIndex + 1);
+                }
+                blocks.push(slice.trim());
+                tempText = tempText.slice(slice.length).trim();
+            }
+        } else if (type === 'words') {
+            const words = text.split(/\s+/);
+            let i = 0;
+            while (i < words.length) {
+                let chunk = words.slice(i, i + blockSize);
+                let lastIndex = chunk.length - 1;
+                while (lastIndex >= 0 && !chunk[lastIndex].endsWith('.')) {
+                    lastIndex--;
+                }
+                if (lastIndex !== -1) {
+                    chunk = chunk.slice(0, lastIndex + 1);
+                }
+                blocks.push(chunk.join(' '));
+                i += chunk.length;
+            }
+        } else if (type === 'paragraphs') {
+            const paragraphs = text.split(/\n\s*\n/);
+            let i = 0;
+            while (i < paragraphs.length) {
+                let chunk = paragraphs.slice(i, i + blockSize);
+                let lastIndex = chunk.length - 1;
+                while (lastIndex >= 0 && !chunk[lastIndex].trim().endsWith('.')) {
+                    lastIndex--;
+                }
+                if (lastIndex !== -1) {
+                    chunk = chunk.slice(0, lastIndex + 1);
+                }
+                blocks.push(chunk.join('\n\n'));
+                i += chunk.length;
+            }
+        } else if (type === 'indent') {
+            const paragraphs = text.split(/\n/);
+            let currentBlock = [];
+            let indentCount = 0;
+
+            for (let i = 0; i < paragraphs.length; i++) {
+                if (paragraphs[i].trim() === "") {
+                    indentCount++;
+                    if (indentCount >= blockSize) {
+                        blocks.push(currentBlock.join('\n'));
+                        currentBlock = [];
+                        indentCount = 0;
+                    }
+                }
+                currentBlock.push(paragraphs[i]);
+            }
+
+            if (currentBlock.length > 0) {
+                blocks.push(currentBlock.join('\n'));
+            }
+        }
+
+        // Criar os blocos de texto
+        blocks.forEach((block, index) => {
+            const div = document.createElement('div');
+            div.classList.add('block');
+
+            const header = document.createElement('div');
+            header.classList.add('block-header');
+
+            const blockNum = document.createElement('span');
+            blockNum.classList.add('block-num');
+            blockNum.textContent = `Parte ${index + 1}`;
+
+            const charCountSpan = document.createElement('span');
+            charCountSpan.classList.add('block-char-count');
+            charCountSpan.textContent = `${block.length.toLocaleString()}`; // Removido "Caracteres:"
+
+            // Aplicar estilos com base na contagem
+            if (block.length > 10000) {
+                div.classList.add('block-exceeded-10000');
+            } else if (block.length > 9800) {
+                div.classList.add('block-exceeded');
+            } else if (block.length > 5000) {
+                div.classList.add('block-warning');
+            }
+
+            // Aplicar classes específicas
+            if (block.length > 10000) {
+                charCountSpan.classList.add('char-red');
+            } else if (block.length > 9800) {
+                charCountSpan.classList.add('char-blue');
+            } else if (block.length > 5000) {
+                charCountSpan.classList.add('char-red');
+            }
+
+            header.appendChild(blockNum);
+            header.appendChild(charCountSpan);
+
+            const content = document.createElement('div');
+            content.classList.add('block-content');
+            content.textContent = block;
+
+            const buttonGroup = document.createElement('div');
+            buttonGroup.classList.add('button-group');
+
+            const copyButton = document.createElement('button');
+            copyButton.textContent = 'Copiar';
+            copyButton.onclick = function() {
+                copyToClipboard(block);
+                setActiveBlockButton(this);
+                showActionPopup('Texto copiado!');
+            };
+            copyButton.classList.add('copy-btn');
+
+            const translateButton = document.createElement('button');
+            translateButton.textContent = 'Traduzir';
+            translateButton.onclick = function() {
+                translateText(block);
+                setActiveBlockButton(this);
+                showActionPopup('Traduzindo...');
+            };
+            translateButton.classList.add('translate-btn');
+
+            // Aplicar classes específicas para blocos que excedem 10000 caracteres
+            if (block.length > 10000) {
+                // Remover classes de cor padrão
+                copyButton.classList.remove('light-blue');
+                translateButton.classList.remove('green');
+                // As classes específicas já estão tratadas via CSS
+            } else {
+                copyButton.classList.add('light-blue');
+                translateButton.classList.add('green');
+            }
+
+            buttonGroup.appendChild(copyButton);
+            buttonGroup.appendChild(translateButton);
+
+            div.appendChild(header);
+            div.appendChild(content);
+            div.appendChild(buttonGroup);
+
+            outputDiv.appendChild(div);
+        });
+    }
+
+    // Função para gerar a página de SRT
+    function generateSrtPage(srtText) {
+        // Exibir a seção de SRT e ocultar a seção de Divisão de Texto
+        document.getElementById('srtSection').style.display = 'block';
+        document.getElementById('output').style.display = 'none';
+
+        // Preencher o texto original
+        document.getElementById('srtOriginalText').value = srtText;
+        document.getElementById('srtDividedText').value = '';
+        document.getElementById('srtFinalText').value = '';
+        document.querySelector('.download-srt-button').style.display = 'none';
+
+        showActionPopup('SRT preparado para geração.');
+    }
+
+    // Função para dividir o texto do SRT
+    function dividirSrtTexto() {
+        const texto = document.getElementById('srtOriginalText').value.trim();
+        if (!texto) {
+            alert("Por favor, insira um texto para dividir.");
+            return;
+        }
+
+        const parágrafos = [];
+        let restante = texto;
+
+        while (restante.length > 500) {
+            let corte = restante.slice(0, 500).lastIndexOf('.') + 1;
+            if (corte === 0) {
+                corte = restante.slice(0, 500).lastIndexOf('!') + 1;
+            }
+            if (corte === 0) {
+                corte = restante.slice(0, 500).lastIndexOf('?') + 1;
+            }
+            if (corte === 0) {
+                corte = restante.slice(0, 500).lastIndexOf(',') + 1;
+            }
+            if (corte <= 0) {
+                corte = 500; // Se não encontrar pontuação, corta no limite de 500 caracteres
+            }
+
+            parágrafos.push(restante.slice(0, corte).trim());
+            restante = restante.slice(corte).trim();
+        }
+
+        parágrafos.push(restante.trim());
+
+        document.getElementById('srtDividedText').value = parágrafos.join('\n\n');
+        showActionPopup('Texto dividido com sucesso!');
+    }
+
+    // Função para copiar o texto dividido do SRT
+    function copiarSrtDividido() {
+        const textoDividido = document.getElementById('srtDividedText').value;
+        if (!textoDividido.trim()) {
+            alert("Nenhum texto dividido disponível para copiar.");
+            return;
+        }
+
+        navigator.clipboard.writeText(textoDividido).then(() => {
+            showCopyPopup('Texto dividido copiado para a área de transferência!');
+        }).catch(err => {
+            console.error('Erro ao copiar texto: ', err);
+        });
+    }
+
+    // Função para converter o texto dividido em SRT
+    function converterParaSrt() {
+        const texto = document.getElementById('srtDividedText').value.trim();
+        if (!texto) {
+            alert("Por favor, divida o texto antes de converter para SRT.");
+            return;
+        }
+
+        const linhas = texto.split('\n').filter(linha => linha.trim());
+        const duracao = 40; // Duração padrão de cada bloco em segundos
+        let resultadoSrt = '';
+        let tempoInicio = 0;
+
+        linhas.forEach((linha, index) => {
+            const tempoFim = tempoInicio + duracao;
+            const tempoInicioFormatado = formatarTempo(tempoInicio);
+            const tempoFimFormatado = formatarTempo(tempoFim);
+
+            resultadoSrt += `${index + 1}\n${tempoInicioFormatado} --> ${tempoFimFormatado}\n${linha.trim()}\n\n`;
+            tempoInicio = tempoFim;
+        });
+
+        document.getElementById('srtFinalText').value = resultadoSrt;
+
+        // Exibir o botão de download SRT
+        document.querySelector('.download-srt-button').style.display = 'inline-block';
+    }
+
+    // Função para baixar o arquivo SRT
+    function baixarSrt() {
+        const srtContent = document.getElementById('srtFinalText').value.trim();
+        if (!srtContent) {
+            alert("Nenhum conteúdo SRT disponível para download.");
+            return;
+        }
+
+        const blob = new Blob([srtContent], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'arquivo.srt';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+
+        showActionPopup('Arquivo SRT baixado com sucesso!');
+    }
+
+    // Função para formatar o tempo no formato SRT
+    function formatarTempo(segundos) {
+        const horas = Math.floor(segundos / 3600).toString().padStart(2, '0');
+        const minutos = Math.floor((segundos % 3600) / 60).toString().padStart(2, '0');
+        const segs = (segundos % 60).toString().padStart(2, '0') + ',000';
+        return `${horas}:${minutos}:${segs}`;
+    }
+
+    // Função para escapar caracteres HTML
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    // Função para traduzir o texto
+    function translateText(text) {
+        const translator = document.getElementById('translator').value;
+        const language = document.getElementById('language').value;
+        let translateUrl = '';
+
+        if (translator === 'google') {
+            translateUrl = `https://translate.google.com/?sl=pt&tl=${language}&text=${encodeURIComponent(text)}&op=translate`;
+            window.open(translateUrl, '_blank');
+        } else if (translator === 'deepl') {
+            // Corrigido para especificar o idioma de origem como Português Brasileiro (pt-BR)
+            translateUrl = `https://www.deepl.com/pt-BR/translator#pt/${language}/${encodeURIComponent(text)}`;
+            window.open(translateUrl, '_blank');
+        } else if (translator === 'yandex') {
+            translateUrl = `https://translate.yandex.com/?source_lang=pt&target_lang=${language}&text=${encodeURIComponent(text)}`;
+            window.open(translateUrl, '_blank');
+        }
+    }
+
+    // Função para copiar texto para a área de transferência
+    function copyToClipboard(text) {
+        navigator.clipboard.writeText(text).then(() => {
+            // Popup já está sendo exibido na função que chama esta
+        }).catch(err => {
+            console.error('Erro ao copiar texto: ', err);
+        });
+    }
+
+    // Função para mostrar o popup de ação
+    function showActionPopup(message) {
+        const popup = document.getElementById('actionPopup');
+        popup.textContent = message;
+        popup.style.display = 'block';
+        setTimeout(() => {
+            popup.style.display = 'none';
+        }, 2000);
+    }
+
+    // Função para mostrar o popup de cópia
+    function showCopyPopup(message) {
+        const popup = document.getElementById('copyPopup');
+        popup.textContent = message;
+        popup.style.display = 'block';
+        setTimeout(() => {
+            popup.style.display = 'none';
+        }, 2000);
+    }
+
+    // Função para definir o botão ativo
+    function setActiveButton(button) {
+        const buttons = document.querySelectorAll('.button-group button');
+        buttons.forEach(btn => btn.classList.remove('active'));
+        button.classList.add('active');
+    }
+
+    // Função para definir o botão ativo dentro do bloco e marcar o bloco como selecionado
+    function setActiveBlockButton(button) {
+        // Remover 'active' de todos os botões dentro de todos os blocos
+        const allButtons = document.querySelectorAll('.block button');
+        allButtons.forEach(btn => btn.classList.remove('active'));
+
+        // Adicionar 'active' ao botão clicado
+        button.classList.add('active');
+
+        // Remover 'selected' de todos os blocos
+        const allBlocks = document.querySelectorAll('.block');
+        allBlocks.forEach(block => block.classList.remove('selected'));
+
+        // Adicionar 'selected' ao bloco pai do botão clicado
+        const block = button.closest('.block');
+        if (block) {
+            block.classList.add('selected');
+        }
+    }
+
+    // Eventos ao carregar a página
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('inputText').addEventListener('input', updateCharCount);
+        document.getElementById('srtInput').addEventListener('input', updateSrtCharCount);
+    });
+</script>
+</body>
+</html>
